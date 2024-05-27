@@ -57,6 +57,11 @@
 			<artifactId>spring-cloud-stream-test-binder</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>telran.storehouse</groupId>
+			<artifactId>storehouse-api</artifactId>
+			<version>0.0.1</version>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
