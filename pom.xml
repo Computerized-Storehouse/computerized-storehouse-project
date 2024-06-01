@@ -92,4 +92,7 @@
 		</plugins>
 	</build>
 
+	<modules>
+		<module>container-data-updater</module>
+	</modules>
 </project>
