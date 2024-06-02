@@ -94,5 +94,6 @@
 
 	<modules>
 		<module>container-data-updater</module>
+		<module>config-server-computerized-storehouse</module>
 	</modules>
 </project>
