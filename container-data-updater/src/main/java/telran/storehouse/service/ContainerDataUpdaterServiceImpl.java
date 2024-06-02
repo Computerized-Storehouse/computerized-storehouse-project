@@ -32,8 +32,11 @@ public class ContainerDataUpdaterServiceImpl implements ContainerDataUpdaterServ
 	@Override
 	@Transactional
 	public ContainerDataDto updateContanerStatus(ContainerDataDto containerDataDto) {
-		// TODO Auto-generated method stub
-		return null;
+		ContainerData containerData = containerRepo.findBySensorUsedId(containerDataDto.sensorUsedId()).orElseThrow();
+		log.debug("---> ContainerData {} found in DB", containerData);
+		containerData.setStatus(containerDataDto.status());
+		log.debug("---> ContainerData {} updated, new Status is {}", containerData, containerDataDto.status());
+		return containerDataDto;
 	}
 
 }
