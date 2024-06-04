@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import lombok.RequiredArgsConstructor;
-
+import lombok.extern.slf4j.Slf4j;
 import telran.storehouse.dto.ContainerDataDto;
 import telran.storehouse.dto.NewStateDto;
 import telran.storehouse.service.ContainerDataUpdaterService;
@@ -22,12 +22,12 @@ public class ContainerDataUpdaterAppl {
 	}
 
 	@Bean
-	Consumer<NewStateDto> containerFullnessUpdateConsumer() {
+	Consumer<NewStateDto> containerFullnessUpdateConsumer() {		
 		return service::updateContanerCurrentFullness;
 	}
 
 	@Bean
-	Consumer<ContainerDataDto> containerStatusUpdateConsumer() {
+	Consumer<ContainerDataDto> containerStatusUpdateConsumer() {		
 		return service::updateContanerStatus;
 	}
 }
