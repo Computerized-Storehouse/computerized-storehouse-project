@@ -1,5 +1,7 @@
 package telran.storehouse.service;
 
-public interface ContainerDataProviderService {
+import telran.storehouse.dto.ContainerDataDto;
 
+public interface ContainerDataProviderService {
+	ContainerDataDto getContainerData(long sensorId);
 }
