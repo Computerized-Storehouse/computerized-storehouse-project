@@ -28,8 +28,7 @@ public class ContainerDataUpdaterConsumerTest {
 
 	private SensorDataDto sensorWrongId = new SensorDataDto(0, 0, 0);
 	private NewStateDto newStateWrongId = new NewStateDto(sensorWrongId, 0);
-	private ContainerDataDto containerDataWrongId = new ContainerDataDto(0, 0, consumerFullnessBindingName, 0, 0,
-			consumerStatusBindingName, 0, null);
+	private ContainerDataDto containerDataWrongId = new ContainerDataDto(0, 0, "", 0, 0, "", 0, null);
 
 	@Test
 	void loadApplicationContext() {
