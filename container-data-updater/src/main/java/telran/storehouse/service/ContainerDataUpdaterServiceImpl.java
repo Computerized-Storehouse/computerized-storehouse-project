@@ -10,14 +10,12 @@ import telran.storehouse.dto.NewStateDto;
 import telran.storehouse.entity.ContainerData;
 import telran.storehouse.exceptions.ContainerNotFoundException;
 import telran.storehouse.repo.ContainerDataRepo;
-import telran.storehouse.repo.ProductRepo;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class ContainerDataUpdaterServiceImpl implements ContainerDataUpdaterService {
 	final ContainerDataRepo containerRepo;
-	final ProductRepo productRepo;
 
 	@Override
 	@Transactional
