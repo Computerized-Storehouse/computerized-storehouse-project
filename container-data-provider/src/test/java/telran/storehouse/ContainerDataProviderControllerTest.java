@@ -16,7 +16,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.annotation.PostConstruct;
-import lombok.extern.slf4j.Slf4j;
 import telran.storehouse.dto.ContainerDataDto;
 import telran.storehouse.dto.ProductDto;
 import telran.storehouse.exceptions.ContainerNotFoundException;
