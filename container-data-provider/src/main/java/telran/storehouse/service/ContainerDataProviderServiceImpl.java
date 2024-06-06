@@ -1,6 +1,7 @@
 package telran.storehouse.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ public class ContainerDataProviderServiceImpl implements ContainerDataProviderSe
 	final ContainerDataRepo containerRepo;
 
 	@Override
+	@Transactional(readOnly = true)
 	public ContainerDataDto getContainerData(long sensorId) {
 		ContainerData containerData = containerRepo.findBySensorUsedId(sensorId)
 				.orElseThrow(() -> new ContainerNotFoundException());
