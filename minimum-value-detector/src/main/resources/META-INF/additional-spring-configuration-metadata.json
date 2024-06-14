@@ -1,0 +1,17 @@
+{"properties": [
+  {
+    "name": "app.minimum.value.detector.producer.binding.name",
+    "type": "java.lang.String",
+    "description": "A description for 'app.minimum.value.detector.producer.binding.name'"
+  },
+  {
+    "name": "app.threshold.provider.port",
+    "type": "java.lang.String",
+    "description": "A description for 'app.threshold.provider.port'"
+  },
+  {
+    "name": "app.threshold.provider.path",
+    "type": "java.lang.String",
+    "description": "A description for 'app.threshold.provider.path'"
+  }
+]}
