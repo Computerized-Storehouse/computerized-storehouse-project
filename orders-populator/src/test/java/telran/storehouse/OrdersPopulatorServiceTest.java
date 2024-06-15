@@ -38,7 +38,6 @@ class OrdersPopulatorServiceTest {
 		productRepo.save(product1);
 		Order order = Order.of(orderDto);
 		order.setProduct(product1);
-		
 		assertEquals(orderDto,ordersService.addOrder(orderDto));
 		List<Order> list = ordersRepo.findAll();
 		assertEquals(4, list.size());
