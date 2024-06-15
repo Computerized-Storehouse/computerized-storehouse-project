@@ -16,11 +16,10 @@ import telran.storehouse.exceptions.IllegalOrderStateException;
 
 @SpringBootTest
 @Import(TestChannelBinderConfiguration.class)
-class OrderPopulatorConsumerTest {
+class OrdersPopulatorConsumerTest {
     
     @Autowired
     InputDestination producer;
-
     private  long ORDER_ID = 1234L;
     private  String consumerBindingName = "ordersPopulatorConsumer-in-0";
     final ProductDto product = new ProductDto("Product", "Units");
