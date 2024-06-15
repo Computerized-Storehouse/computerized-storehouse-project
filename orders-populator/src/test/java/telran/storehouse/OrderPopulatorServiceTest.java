@@ -2,8 +2,6 @@ package telran.storehouse;
 
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
-import java.util.Optional;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +11,7 @@ import telran.storehouse.dto.ProductDto;
 import telran.storehouse.entity.Order;
 import telran.storehouse.entity.Product;
 import telran.storehouse.exceptions.IllegalOrderStateException;
+import telran.storehouse.exceptions.IllegalProductStateException;
 import telran.storehouse.repo.OrdersRepo;
 import telran.storehouse.repo.ProductRepo;
 import telran.storehouse.service.OrdersPopulatorService;
@@ -51,5 +50,8 @@ class OrderPopulatorServiceTest {
 	            System.currentTimeMillis(), System.currentTimeMillis(), 20L, "creator", "status");
 		assertThrowsExactly(IllegalOrderStateException.class,()-> ordersService.addOrder(orderDtoExist));
 	}
-		
+	@Test
+	void ordersPopulator_Product_not_found() {
+		assertThrowsExactly(IllegalProductStateException.class,()-> ordersService.addOrder(orderDto));
+}
 }

@@ -2,7 +2,6 @@ package telran.storehouse.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import telran.storehouse.dto.OrderDataDto;
@@ -29,13 +28,8 @@ public class OrdersPopulatorServiceImpl implements OrdersPopulatorService {
 			}
 			Order order = Order.of(orderData);
 			order.setProduct(Product.of(orderData.product()));
-			
-			
-			
 			ordersRepo.save(order);
 			log.debug("Order {} has been saved", orderData);
-			
-		
 		return orderData;
 	}
 
