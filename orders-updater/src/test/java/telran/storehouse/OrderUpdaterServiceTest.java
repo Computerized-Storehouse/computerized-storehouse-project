@@ -27,7 +27,7 @@ import telran.storehouse.service.*;
 class OrderUpdaterServiceTest {
 	private static final long ORDER_ID_NORMAL = 100;
 	private static final long ORDER_ID_NOT_EXIST = 200;
-	
+	private static final long COMPLETED_ORDER_ID_NORMAL = 200;
 	@Autowired
 	private OrdersUpdaterService ordersUpdaterService;
 	@Autowired
@@ -37,7 +37,7 @@ class OrderUpdaterServiceTest {
 	
 	    final ProductDto product1 = new ProductDto("product1", "unit1");
 	    final OrderDataDto orderDtoCopy = new OrderDataDto(100, 300, "A1", product1, 30, 2023-06-06, 2023-07-07, "creator1","status1");
-	    final OrderDataDto completedOrderDto = new OrderDataDto(200, 300, "A1", product1, 30, 2023-06-06, 2023-07-07, "creator1","status1");
+	    final OrderDataDto completedOrderDto = new OrderDataDto(COMPLETED_ORDER_ID_NORMAL, 300, "A1", product1, 30, 2023-06-06, 2023-07-07, "creator1","status1");
 	    @Transactional
 	    @Rollback
 	    @Test
@@ -51,6 +51,8 @@ class OrderUpdaterServiceTest {
 			Order order = Order.of(completedOrderDto);
 			order.setProduct(product);
 			completedOrdersRepo.save(CompletedOrder.of(order));
+			assertEquals(COMPLETED_ORDER_ID_NORMAL, completedOrdersRepo.getById(COMPLETED_ORDER_ID_NORMAL).getOrderId());
+			
 	    }
 	    @Test
 	    void orderUpdater_Order_not_found() {
