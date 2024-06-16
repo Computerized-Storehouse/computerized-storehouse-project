@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import telran.storehouse.dto.OrderStatus;
 import telran.storehouse.entity.CompletedOrder;
 import telran.storehouse.entity.Order;
 import telran.storehouse.exceptions.IllegalOrderStateException;
@@ -26,6 +27,7 @@ public class OrdersUpdaterServiceImpl implements OrdersUpdaterService {
 		if(completedOrderRepo.existsById(orderId)) {
 			throw new IllegalOrderStateException();
 		}
+		completedOrder.setStatus(OrderStatus.CLOSE);
 		completedOrderRepo.save(completedOrder);
 		log.debug("Completed order {} has been saved", completedOrder);
 		return completedOrder;

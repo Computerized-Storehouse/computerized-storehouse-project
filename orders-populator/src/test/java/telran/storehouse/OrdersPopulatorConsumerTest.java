@@ -10,6 +10,7 @@ import org.springframework.cloud.stream.binder.test.TestChannelBinderConfigurati
 import org.springframework.context.annotation.Import;
 import org.springframework.messaging.support.GenericMessage;
 import telran.storehouse.dto.OrderDataDto;
+import telran.storehouse.dto.OrderStatus;
 import telran.storehouse.dto.ProductDto;
 import telran.storehouse.exceptions.IllegalOrderStateException;
 
@@ -22,9 +23,10 @@ class OrdersPopulatorConsumerTest {
     InputDestination producer;
     private  long ORDER_ID = 1234L;
     private  String consumerBindingName = "ordersPopulatorConsumer-in-0";
+    OrderStatus status;
     final ProductDto product = new ProductDto("Product", "Units");
     final OrderDataDto orderDto = new OrderDataDto(ORDER_ID, 4321L, "A123", product,
-            System.currentTimeMillis(), System.currentTimeMillis(), 20L, "creator", "status");
+            System.currentTimeMillis(), System.currentTimeMillis(), 20L, "creator", status);
     @Test
 	void loadApplicationContext() {
 		assertNotNull(producer);

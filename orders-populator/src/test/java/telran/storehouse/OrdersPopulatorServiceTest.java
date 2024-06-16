@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import telran.storehouse.dto.OrderDataDto;
+import telran.storehouse.dto.OrderStatus;
 import telran.storehouse.dto.ProductDto;
 import telran.storehouse.entity.Order;
 import telran.storehouse.entity.Product;
@@ -31,13 +32,14 @@ class OrdersPopulatorServiceTest {
 	
 	final ProductDto product = new ProductDto("Product", "Units");
 	final OrderDataDto orderDto = new OrderDataDto(ORDER_ID, 4321L, "A123", product,
-            System.currentTimeMillis(), System.currentTimeMillis(), 20L, "creator", "status");
+            System.currentTimeMillis(), System.currentTimeMillis(), 20L, "creator", OrderStatus.OPEN);
 	@Test
 	void ordersPopulator_addOrder() {
 		Product product1 = Product.of(product);
 		productRepo.save(product1);
 		Order order = Order.of(orderDto);
 		order.setProduct(product1);
+		
 		assertEquals(orderDto,ordersService.addOrder(orderDto));
 		List<Order> list = ordersRepo.findAll();
 		assertEquals(4, list.size());
@@ -47,7 +49,7 @@ class OrdersPopulatorServiceTest {
 	@Test
 	void ordersPopulator_addOrder_existing_id() {
 		OrderDataDto orderDtoExist = new OrderDataDto(ORDER_ID_EXIST, 321, "A1", product,
-	            System.currentTimeMillis(), System.currentTimeMillis(), 20L, "creator", "status");
+	            System.currentTimeMillis(), System.currentTimeMillis(), 20L, "creator",OrderStatus.OPEN);
 		assertThrowsExactly(IllegalOrderStateException.class,()-> ordersService.addOrder(orderDtoExist));
 	}
 	@Test
