@@ -62,7 +62,7 @@ class MinimumValueDetectorControllerTest {
 		SensorDataDto actual = mapper.readValue(message.getPayload(), SensorDataDto.class);
 		SensorDataDto expected = sensorDataWithLessValue ;
 		assertEquals(expected.id(), actual.id());
-		assertEquals(expected.fullnes(), actual.fullnes());
+		assertEquals(expected.fullness(), actual.fullness());
 		
 	}
 	

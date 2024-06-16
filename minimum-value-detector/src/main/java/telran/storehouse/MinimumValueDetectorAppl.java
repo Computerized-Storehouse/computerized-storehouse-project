@@ -39,7 +39,7 @@ public class MinimumValueDetectorAppl {
 			log.trace("received new state sensor data {} in the lack detector", newStateDto);
 			SensorDataDto sensorData = newStateDto.sensorData();
 			long sensorId = sensorData.id();
-			double fullness = sensorData.fullnes();
+			double fullness = sensorData.fullness();
 			double thresholdValue = valueProviderService.getValue(sensorId);
 			if (thresholdValue > fullness) {
 				streamBridge.send(producerBindingName, sensorData);

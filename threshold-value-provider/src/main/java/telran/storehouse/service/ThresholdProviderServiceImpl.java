@@ -1,9 +1,12 @@
 package telran.storehouse.service;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import telran.storehouse.dto.ContainerStatus;
 import telran.storehouse.exceptions.SensorNotFoundException;
 import telran.storehouse.repo.ContainerDataRepo;
 
@@ -15,12 +18,12 @@ public class ThresholdProviderServiceImpl implements ThresholdProviderService {
 
 	@Override
 	public double getThresholdValue(long sensorUsedId) {
-		Double value = containerRepo.findThresholdValueBySensorUsedIdAndStatus(sensorUsedId, "OK");
-		if(value == null) {
+		Optional<Double> value = containerRepo.findThresholdValueBySensorUsedIdAndStatus(sensorUsedId, ContainerStatus.OK);
+		if(value.isEmpty()) {
 			throw new SensorNotFoundException(Long.toString(sensorUsedId));
 		}
-		log.debug("Threshol value is {} in container with sensorUsedId {}", value, sensorUsedId);
-		return value;
+		log.debug("Threshold value is {} in container with sensorUsedId {}", value, sensorUsedId);
+		return value.get();
 	}
 
 }

@@ -18,7 +18,7 @@ public class UpdateDetectorServiceImpl implements UpdateDetectorService {
 	public Double getDifference(SensorDataDto sensorDataDto) {
 		Long sensorId = sensorDataDto.id();
 		SensorData sensorData = sensorDataRepo.findById(sensorId).orElse(null);
-		Double fullnes = sensorDataDto.fullnes();
+		Double fullnes = sensorDataDto.fullness();
 		Double res = null;
 		
 		if (sensorData == null || !sensorData.getFullnes().equals(fullnes)) {
