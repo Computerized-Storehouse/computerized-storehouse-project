@@ -91,5 +91,7 @@
 	<modules>
 		<module>orders-populator</module>
 		<module>orders-updater</module>
+		<module>values-analyzer</module>
+		<module>order-data-provider</module>
 	</modules>
 </project>
