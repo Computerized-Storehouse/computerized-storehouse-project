@@ -56,7 +56,7 @@ public class ValuesAnalyzerServiceImpl implements ValuesAnalyzerService {
 		if (sensorData == null) {
 			log.error("SensorDataDto is null");
 			return;
-		}
+		} 
 		log.trace("received {}", sensorData);
 		long id = sensorData.id();
 		double fullness = sensorData.fullness();
@@ -74,6 +74,7 @@ public class ValuesAnalyzerServiceImpl implements ValuesAnalyzerService {
 			lastDataReceivedTime = System.currentTimeMillis();
 			dataReceived = true;
 		}
+		
 	}
 
 	private void checkMissedData() {

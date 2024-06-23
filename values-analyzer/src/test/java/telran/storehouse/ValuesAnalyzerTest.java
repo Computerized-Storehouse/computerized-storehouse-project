@@ -3,27 +3,28 @@ package telran.storehouse;
 import static org.mockito.ArgumentMatchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.cloud.stream.binder.test.*;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.GenericMessage;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import telran.storehouse.repo.*;
-import telran.storehouse.dto.SensorDataDto;
-import telran.storehouse.model.ErrorCount;
-import telran.storehouse.model.SensorTimeout;
+import telran.storehouse.dto.*;
+import telran.storehouse.model.*;
 import telran.storehouse.service.ValuesAnalyzerService;
 
 @SpringBootTest
 
-class ValuesAnalyzerServiceTest {
+class ValuesAnalyzerTest {
 
 	@Autowired
 	ValuesAnalyzerService service;
@@ -31,6 +32,18 @@ class ValuesAnalyzerServiceTest {
 	ErrorsCountRepo countRepo;
 	@MockBean
 	SensorTimeoutRepo timeoutRepo;
+	@Autowired
+	InputDestination producer;
+	@Autowired
+	OutputDestination consumer;
+	private String consumerBindingName = "valuesAnalyzerConsumer-in-0";
+	@Value("${app.values.analyzer.producer.binding.name}")
+	private String producerBindingName;
+	@Value("${app.values.analyzer.producer.error.count.binding.name}")
+	private String producerErrorCountBindingName;
+	@Value("${app.values.analyzer.producer.error.received.binding.name}")
+	private String producerErrorReceivedBindingName;
+
 	HashMap<Long, ErrorCount> countMap = new HashMap<>();
 	HashMap<Long, SensorTimeout> timeoutMap = new HashMap<>();
 
@@ -72,14 +85,14 @@ class ValuesAnalyzerServiceTest {
 	}
 
 	@Test
-	void valuesAnalyzer_normalFlow() {
+	void valuesAnalyzer_serviceTest_normalFlow() {
 		service.sensorDataAnalyzing(sensorDataNormal);
 		assertFalse(countRepo.existsById(sensorDataNormal.id()));
 		assertFalse(timeoutRepo.existsById(sensorDataNormal.id()));
 	}
 
 	@Test
-	void valuesAnalyzer_errorData() {
+	void valuesAnalyzer_serviceTest_errorData() {
 		service.sensorDataAnalyzing(sensorDataError);
 		List<Double> list = countRepo.findById(sensorDataError.id()).get().getErrorsCounter();
 		assertEquals(1, list.size());
@@ -90,7 +103,7 @@ class ValuesAnalyzerServiceTest {
 	}
 
 	@Test
-	void valuesAnalyzer_sensor_noData() throws Throwable {
+	void valuesAnalyzer_serviceTest_sensor_noData() throws InterruptedException {
 		service.sensorDataAnalyzing(sensorDataNormal);
 		service.startCheckMissedDataScheduler();
 		TimeUnit.SECONDS.sleep(2);
@@ -99,6 +112,40 @@ class ValuesAnalyzerServiceTest {
 		TimeUnit.SECONDS.sleep(2);
 		optionalSensorTimeout = timeoutRepo.findById(sensorDataNormal.id());
 		assertTrue(optionalSensorTimeout.isPresent());
+
+	}
+
+	@Test
+	void valuesAnalyzer_send_normalSensorData() {
+		service.sensorDataAnalyzing(sensorDataNormal);
+		producer.send(new GenericMessage<>(sensorDataNormal), consumerBindingName);
+		Message<byte[]> message = consumer.receive(10, producerBindingName);
+		assertNotNull(message);
+	}
+
+	@Test
+	void valuesAnalyzer_send_ErrorData() throws Exception {
+		producer.send(new GenericMessage<>(sensorDataError), consumerBindingName);
+		Message<byte[]> message = consumer.receive(10, producerErrorCountBindingName);
+		assertNull(message);
+		producer.send(new GenericMessage<>(sensorDataError), consumerBindingName);
+		message = consumer.receive(10, producerErrorCountBindingName);
+		assertNotNull(message);
+		ObjectMapper mapper = new ObjectMapper();
+		ErrorDataDto actual = mapper.readValue(message.getPayload(), ErrorDataDto.class);
+		List<Double> errorsCounter = actual.errorsCounter();
+		ErrorDataDto expected = new ErrorDataDto(100, errorsCounter);
+		assertEquals(expected.sensorId(), actual.sensorId());
+
+	}
+
+	@Test
+	void valuesAnalizer_send_SensorTimeoutData() throws InterruptedException, Throwable {
+		producer.send(new GenericMessage<>(sensorDataNormal), consumerBindingName);
+		service.startCheckMissedDataScheduler();
+		TimeUnit.SECONDS.sleep(4);
+		Message<byte[]> message = consumer.receive(10, producerBindingName);
+		assertNotNull(message);
 
 	}
 
