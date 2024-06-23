@@ -4,4 +4,5 @@ import telran.storehouse.dto.SensorDataDto;
 
 public interface ValuesAnalyzerService {
 	void sensorDataAnalyzing(SensorDataDto sensorData);
+	void startCheckMissedDataScheduler();
 }
