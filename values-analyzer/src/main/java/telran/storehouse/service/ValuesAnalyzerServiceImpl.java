@@ -26,8 +26,8 @@ public class ValuesAnalyzerServiceImpl implements ValuesAnalyzerService {
 	private String producerBindingName;
 	@Value("${app.values.analyzer.producer.error.count.binding.name}")
 	private String producerErrorCountBindingName;
-	@Value("${app.values.analyzer.producer.error.received.binding.name}")
-	private String producerErrorReceivedBindingName;
+	@Value("${app.values.analyzer.producer.error.response.binding.name}")
+	private String producerErrorResponseTimeoutBindingName;
 	@Value("${app.reducing.size}")
 	int reducingSize;
 	@Value("${app.sensor.data.timeout.seconds}")
@@ -40,6 +40,7 @@ public class ValuesAnalyzerServiceImpl implements ValuesAnalyzerService {
 	private volatile long lastDataReceivedTime;
 	private volatile boolean dataReceived = false;
 	private volatile SensorDataDto lastSensorData;
+	
 
 	@PostConstruct
 	public void init() {
@@ -51,7 +52,7 @@ public class ValuesAnalyzerServiceImpl implements ValuesAnalyzerService {
 	}
 
 	@Override
-	@Transactional
+	@Transactional 
 	public void sensorDataAnalyzing(SensorDataDto sensorData) {
 		if (sensorData == null) {
 			log.error("SensorDataDto is null");
@@ -89,8 +90,8 @@ public class ValuesAnalyzerServiceImpl implements ValuesAnalyzerService {
 						: new ArrayList<>();
 				errorsTimestampList.add(System.currentTimeMillis());
 				if (errorsTimestampList.size() >= maxMissedData) {
-					streamBridge.send(producerErrorReceivedBindingName, timeout.build());
-					log.debug("SensorId: {} - error timeout sent to {}", id, producerErrorReceivedBindingName);
+					streamBridge.send(producerErrorResponseTimeoutBindingName, timeout.build());
+					log.debug("SensorId: {} - error timeout sent to {}", id, producerErrorResponseTimeoutBindingName);
 					errorsTimestampList.clear();
 					log.debug("clear errorsTimestampList");
 				}
@@ -108,7 +109,8 @@ public class ValuesAnalyzerServiceImpl implements ValuesAnalyzerService {
 		Double fullness = sensorData.fullness();
 		ErrorCount errorCount = errorsCountRepo.findById(sensorId).orElseGet(() -> {
 			log.debug("ErrorCount for sensorId {} is null, creating new ErrorCount", sensorId);
-			return new ErrorCount(sensorId);
+			Long timestamp = System.currentTimeMillis();
+			return new ErrorCount(sensorId,timestamp);
 		});
 		List<Double> errorsCounter = getOrInitializeErrorsCounter(errorCount);
 		errorsCounter.add(fullness);

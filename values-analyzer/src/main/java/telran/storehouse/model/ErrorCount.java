@@ -17,11 +17,13 @@ public class ErrorCount {
  @Id
 @NonNull
 Long sensorId;
+ @NonNull
+Long timestamp;
  @Setter
 List<Double> errorsCounter = new ArrayList<Double>();
  	
 
  public ErrorDataDto build() {
-		return new ErrorDataDto(sensorId, errorsCounter);
+		return new ErrorDataDto(sensorId,timestamp, errorsCounter);
  	}
 }
