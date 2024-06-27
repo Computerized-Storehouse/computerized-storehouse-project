@@ -50,7 +50,7 @@ public class ValuesAnalyzerServiceImpl implements ValuesAnalyzerService {
 	public void startCheckMissedDataScheduler() {
 		scheduler.scheduleAtFixedRate(this::checkMissedData, 0, checkInterval, TimeUnit.SECONDS);
 	}
-
+ 
 	@Override
 	@Transactional 
 	public void sensorDataAnalyzing(SensorDataDto sensorData) {
@@ -107,9 +107,10 @@ public class ValuesAnalyzerServiceImpl implements ValuesAnalyzerService {
 	private void addErrorCount(SensorDataDto sensorData) {
 		Long sensorId = sensorData.id();
 		Double fullness = sensorData.fullness();
+		Long timestamp = sensorData.timestamp();
 		ErrorCount errorCount = errorsCountRepo.findById(sensorId).orElseGet(() -> {
 			log.debug("ErrorCount for sensorId {} is null, creating new ErrorCount", sensorId);
-			Long timestamp = System.currentTimeMillis();
+			
 			return new ErrorCount(sensorId,timestamp);
 		});
 		List<Double> errorsCounter = getOrInitializeErrorsCounter(errorCount);
