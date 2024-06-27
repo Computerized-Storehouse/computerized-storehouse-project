@@ -7,8 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import telran.storehouse.dto.OrderDataDto;
 import telran.storehouse.entity.Order;
 import telran.storehouse.entity.Product;
-import telran.storehouse.exceptions.IllegalOrderStateException;
-import telran.storehouse.exceptions.IllegalProductStateException;
+import telran.storehouse.exceptions.*;
 import telran.storehouse.repo.OrdersRepo;
 import telran.storehouse.repo.ProductRepo;
 @Service
@@ -17,6 +16,7 @@ import telran.storehouse.repo.ProductRepo;
 public class OrdersPopulatorServiceImpl implements OrdersPopulatorService {
 	final OrdersRepo ordersRepo;
 	final ProductRepo productRepo;
+	
 	@Override
 	@Transactional
 	public OrderDataDto addOrder(OrderDataDto orderData) {
@@ -30,6 +30,7 @@ public class OrdersPopulatorServiceImpl implements OrdersPopulatorService {
 			order.setProduct(Product.of(orderData.product()));
 			ordersRepo.save(order);
 			log.debug("Order {} has been saved", orderData);
+			
 		return orderData;
 	}
 

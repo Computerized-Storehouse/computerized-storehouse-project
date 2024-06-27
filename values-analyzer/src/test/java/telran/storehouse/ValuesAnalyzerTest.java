@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.stream.binder.test.*;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
@@ -23,7 +24,7 @@ import telran.storehouse.model.*;
 import telran.storehouse.service.ValuesAnalyzerService;
 
 @SpringBootTest
-
+@Import(TestChannelBinderConfiguration.class)
 class ValuesAnalyzerTest {
 
 	@Autowired
@@ -41,9 +42,8 @@ class ValuesAnalyzerTest {
 	private String producerBindingName;
 	@Value("${app.values.analyzer.producer.error.count.binding.name}")
 	private String producerErrorCountBindingName;
-	@Value("${app.values.analyzer.producer.error.received.binding.name}")
-	private String producerErrorReceivedBindingName;
-
+	@Value("${app.values.analyzer.producer.error.response.binding.name}")
+	private String producerErrorResponseTimeoutBindingName;
 	HashMap<Long, ErrorCount> countMap = new HashMap<>();
 	HashMap<Long, SensorTimeout> timeoutMap = new HashMap<>();
 
@@ -134,7 +134,8 @@ class ValuesAnalyzerTest {
 		ObjectMapper mapper = new ObjectMapper();
 		ErrorDataDto actual = mapper.readValue(message.getPayload(), ErrorDataDto.class);
 		List<Double> errorsCounter = actual.errorsCounter();
-		ErrorDataDto expected = new ErrorDataDto(100, errorsCounter);
+		Long timestamp = System.currentTimeMillis();
+		ErrorDataDto expected = new ErrorDataDto(100,timestamp, errorsCounter);
 		assertEquals(expected.sensorId(), actual.sensorId());
 
 	}
@@ -144,7 +145,7 @@ class ValuesAnalyzerTest {
 		producer.send(new GenericMessage<>(sensorDataNormal), consumerBindingName);
 		service.startCheckMissedDataScheduler();
 		TimeUnit.SECONDS.sleep(4);
-		Message<byte[]> message = consumer.receive(10, producerBindingName);
+		Message<byte[]> message = consumer.receive(10, producerErrorResponseTimeoutBindingName);
 		assertNotNull(message);
 
 	}

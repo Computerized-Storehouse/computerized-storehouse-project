@@ -7,16 +7,17 @@ import lombok.extern.slf4j.Slf4j;
 import telran.storehouse.dto.OrderStatus;
 import telran.storehouse.entity.CompletedOrder;
 import telran.storehouse.entity.Order;
-import telran.storehouse.exceptions.IllegalOrderStateException;
-import telran.storehouse.exceptions.OrderNotFoundException;
+import telran.storehouse.exceptions.*;
 import telran.storehouse.repo.CompletedOrdersRepo;
 import telran.storehouse.repo.OrdersRepo;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class OrdersUpdaterServiceImpl implements OrdersUpdaterService {
-	final OrdersRepo orderRepo ;
-	final CompletedOrdersRepo completedOrderRepo ;
+	final OrdersRepo orderRepo;
+	final CompletedOrdersRepo completedOrderRepo;
+
 	@Override
 	@Transactional
 	public CompletedOrder updateOrder(long orderId) {
@@ -24,14 +25,14 @@ public class OrdersUpdaterServiceImpl implements OrdersUpdaterService {
 		CompletedOrder completedOrder = CompletedOrder.of(order);
 		orderRepo.deleteById(orderId);
 		log.debug("Order {} deleted ", order);
-		if(completedOrderRepo.existsById(orderId)) {
+		if (completedOrderRepo.existsById(orderId)) {
 			throw new IllegalOrderStateException();
+
 		}
 		completedOrder.setStatus(OrderStatus.CLOSE);
 		completedOrderRepo.save(completedOrder);
 		log.debug("Completed order {} has been saved", completedOrder);
 		return completedOrder;
 	}
-	
-	
+
 }
